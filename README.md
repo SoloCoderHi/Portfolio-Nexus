@@ -33,13 +33,6 @@ The application is composed of four main microservices that communicate through 
 3.  **Market Data Service (AI Service)**: Receives market data from various sources, processes it, and publishes it to the `portfolioservice` topic.
 4.  **Portfolio Service**: Subscribes to the `portfolioservice` topic to update the user's portfolio.
 
-<img width="2000" height="2048" alt="Picsart_25-09-14_20-40-13-806" src="https://github.com/user-attachments/assets/0d6a92ef-9a24-4090-bd58-9373b1870236" />
-
-
-![PhotoFix20250914202956](https://github.com/user-attachments/assets/ceef958a-175e-474b-9e42-0669019bd585)
-
-
-
 ## 📦 Installation & Setup Guide
 
 Follow these steps to get the project running locally.
