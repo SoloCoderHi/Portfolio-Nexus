@@ -102,4 +102,5 @@ yarg==0.1.9
 yarl==1.9.4
 requests==2.31.0
 yfinance
+lxml
 

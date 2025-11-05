@@ -106,6 +106,7 @@ install_requires = [
     'yarg==0.1.9',
     'yarl==1.9.4',
     'yfinance',
+    'lxml',
 ]
 
 setup(
