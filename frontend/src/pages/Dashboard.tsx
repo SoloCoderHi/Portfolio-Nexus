@@ -1,4 +1,4 @@
-import { MyPortfolioCarousel } from "../components/widgets/MyPortfolioCarousel";
+import { AssetTypeSummaryCards } from "../components/widgets/AssetTypeSummaryCards";
 import { PortfolioPerformanceChart } from "../components/widgets/PortfolioPerformanceChart";
 import { TotalHoldingCard } from "../components/widgets/TotalHoldingCard";
 import { PortfolioOverviewTable } from "../components/widgets/PortfolioOverviewTable";
@@ -20,8 +20,16 @@ const Dashboard = () => {
         {/* Total Holding Card - Spans 1 column */}
         <TotalHoldingCard />
 
-        {/* My Portfolio Carousel - Spans 2 columns on large screens */}
-        <MyPortfolioCarousel className="lg:col-span-2" />
+        {/* Asset Type Summary Cards - Spans 2 columns on large screens */}
+        <div className="lg:col-span-2">
+          <div className="rounded-2xl border border-slate-800 bg-black p-6">
+            <div className="mb-4">
+              <h2 className="text-lg font-semibold text-slate-100">My Portfolio</h2>
+              <p className="text-sm text-slate-400">Asset breakdown by type</p>
+            </div>
+            <AssetTypeSummaryCards />
+          </div>
+        </div>
       </div>
 
       {/* Portfolio Performance Chart - Full Width */}

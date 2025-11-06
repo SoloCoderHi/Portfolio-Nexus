@@ -11,7 +11,7 @@ const SkeletonLoader = () => (
     {[1, 2, 3, 4].map((i) => (
       <div
         key={i}
-        className="min-w-60 animate-pulse rounded-xl border border-slate-800 bg-slate-900/60 p-4"
+        className="min-w-60 animate-pulse rounded-xl border border-slate-800 bg-black p-4"
       >
         <div className="space-y-3">
           <div className="flex items-center gap-3">
@@ -45,7 +45,7 @@ export const MyPortfolioCarousel = ({
 
   return (
     <div
-      className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-6 ${className}`}
+      className={`rounded-2xl border border-slate-800 bg-black p-6 ${className}`}
     >
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
@@ -72,7 +72,7 @@ export const MyPortfolioCarousel = ({
       )}
 
       {!isLoading && !isError && holdings.length === 0 && (
-        <div className="flex items-center justify-center rounded-xl border border-slate-800 bg-slate-900/40 p-8">
+        <div className="flex items-center justify-center rounded-xl border border-slate-800 bg-black p-8">
           <div className="text-center">
             <p className="text-sm font-medium text-slate-300">
               No holdings yet

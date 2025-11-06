@@ -36,8 +36,8 @@ export const SideNav = ({ isMobileOpen, onClose }: SideNavProps) => {
     <>
       <div
         className={[
-          "fixed inset-y-0 left-0 z-50 w-72 transform bg-slate-900/95 backdrop-blur-xl transition-transform duration-300 ease-in-out",
-          "lg:static lg:z-auto lg:flex lg:w-64 lg:translate-x-0 lg:bg-slate-900/70",
+          "fixed inset-y-0 left-0 z-50 w-72 transform bg-black backdrop-blur-xl transition-transform duration-300 ease-in-out",
+          "lg:static lg:z-auto lg:flex lg:w-64 lg:translate-x-0 lg:bg-black",
           isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         ].join(" ")}
       >

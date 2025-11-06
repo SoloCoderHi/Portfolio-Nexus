@@ -2,28 +2,54 @@ import { portfolioClient } from "./client";
 
 export type StockHolding = {
   id: number;
-  user_id: string;
+  externalId: string;
+  userId: string;
   symbol: string;
+  exchange: string;
   quantity: number;
-  average_cost: number;
+  purchasePrice: number;
+  purchaseDate: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type MutualFundHolding = {
   id: number;
-  user_id: string;
-  scheme_code: string;
-  scheme_name: string;
+  externalId: string;
+  userId: string;
+  schemeCode: string;
   quantity: number;
-  average_nav: number;
+  purchasePrice: number;
+  purchaseDate: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CryptoHolding = {
   id: number;
-  user_id: string;
-  coin_id: string;
-  coin_name: string;
+  externalId: string;
+  userId: string;
+  coinId: string;
+  symbol: string;
   quantity: number;
-  average_cost: number;
+  purchasePrice: number;
+  purchaseDate: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ManualHolding = {
+  id: number;
+  externalId: string;
+  userId: string;
+  assetName: string;
+  assetType: string;
+  investedValue: number;
+  currentValue: number;
+  purchaseDate: string;
+  maturityDate: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export const getStockHoldings = async (): Promise<StockHolding[]> => {
@@ -41,12 +67,20 @@ export const getCryptoHoldings = async (): Promise<CryptoHolding[]> => {
   return response.data;
 };
 
+export const getManualHoldings = async (): Promise<ManualHolding[]> => {
+  const response = await portfolioClient.get("/portfolio/v1/manuals");
+  return response.data;
+};
+
 export const getAllHoldings = async () => {
-  const [stocks, mutualFunds, cryptos] = await Promise.all([
+  const [stocks, mutualFunds, cryptos, manuals] = await Promise.all([
     getStockHoldings(),
     getMutualFundHoldings(),
     getCryptoHoldings(),
+    getManualHoldings(),
   ]);
 
-  return { stocks, mutualFunds, cryptos };
+  return { stocks, mutualFunds, cryptos, manuals };
 };
+
+

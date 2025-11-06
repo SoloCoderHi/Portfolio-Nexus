@@ -34,7 +34,7 @@ export const WatchlistTable = ({ className = "" }: WatchlistTableProps) => {
 
   return (
     <div
-      className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-6 ${className}`}
+      className={`rounded-2xl border border-slate-800 bg-black p-6 ${className}`}
     >
       {/* Header */}
       <div className="mb-6">

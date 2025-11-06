@@ -16,12 +16,12 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
     navigate("/login");
   };
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-slate-800 bg-black backdrop-blur">
       <div className="flex items-center gap-4 px-4 py-4 sm:px-6">
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 text-slate-300 transition hover:text-white lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-black text-slate-300 transition hover:text-white lg:hidden"
           aria-label="Toggle navigation menu"
         >
           <svg
@@ -40,7 +40,7 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
           </svg>
         </button>
 
-        <div className="hidden items-center gap-1 rounded-full border border-slate-700 bg-slate-800 px-1 py-1 text-sm font-medium text-slate-300 md:flex">
+        <div className="hidden items-center gap-1 rounded-full border border-slate-700 bg-black px-1 py-1 text-sm font-medium text-slate-300 md:flex">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -53,7 +53,7 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
         </div>
 
         <div className="flex flex-1 items-center gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-slate-700 bg-slate-800 px-4 py-2 text-sm text-slate-200">
+          <div className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-slate-700 bg-black px-4 py-2 text-sm text-slate-200">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -78,7 +78,7 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 text-slate-300 transition hover:text-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-black text-slate-300 transition hover:text-white"
               aria-label="View notifications"
             >
               <svg
@@ -100,7 +100,7 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
             <button
               type="button"
               onClick={handleLogout}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 text-slate-300 transition hover:border-red-500 hover:text-red-500"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-700 bg-black text-slate-300 transition hover:border-red-500 hover:text-red-500"
               aria-label="Logout"
               title="Logout"
             >
@@ -120,7 +120,7 @@ export const HeaderBar = ({ onMenuClick }: HeaderBarProps) => {
               </svg>
             </button>
 
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2">
+            <div className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-black px-3 py-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500 text-sm font-semibold text-white">
                 AL
               </div>

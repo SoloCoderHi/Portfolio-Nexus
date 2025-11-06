@@ -2,6 +2,29 @@
 
 :root {
   color-scheme: dark;
+  
+  /* Dark Theme Color Variables */
+  --color-background: #000000;        /* AMOLED black - body background */
+  --color-surface: #0a0a0a;          /* Dark surface background */
+  --color-widget-bg: #000000;        /* Widget background (black) */
+  --color-header-bg: #000000;        /* Header background (black) */
+  --color-nav-bg: #000000;           /* Navigation background (black) */
+  --color-search-bg: #000000;        /* Search bar background (black) */
+  --color-button-bg: #000000;        /* Button background (black) */
+  
+  /* Text Colors */
+  --color-text-primary: #ffffff;     /* Primary text color */
+  --color-text-secondary: #b0b0b0;   /* Secondary text color */
+  --color-text-muted: #6b7280;       /* Muted text color */
+  
+  /* Border Colors */
+  --color-border: #1e293b;           /* Border color for dark theme */
+  --color-border-hover: #334155;     /* Border hover color */
+  
+  /* Accent Colors */
+  --color-accent: #6366f1;           /* Indigo accent */
+  --color-success: #10b981;          /* Green for positive values */
+  --color-error: #ef4444;            /* Red for negative values */
 }
 
 body {
@@ -14,8 +37,8 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background-color: rgb(15 23 42);
-  color: rgb(226 232 240);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 #root {

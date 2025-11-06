@@ -57,7 +57,7 @@ const ErrorState = ({ message }: { message: string }) => (
 );
 
 const EmptyState = () => (
-  <div className="flex h-80 items-center justify-center rounded-xl border border-slate-800 bg-slate-900/50">
+  <div className="flex h-80 items-center justify-center rounded-xl border border-slate-800 bg-black">
     <div className="text-center">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +112,7 @@ export const PortfolioPerformanceChart = ({
   const { data, isLoading, isError, error } = usePortfolioHistory();
 
   // Force proper grid span by ensuring the className is always applied
-  const containerClassName = `rounded-2xl border border-slate-800 bg-slate-900/80 p-6 ${className}`.trim();
+  const containerClassName = `rounded-2xl border border-slate-800 bg-black p-6 ${className}`.trim();
 
   // Show loading skeleton
   if (isLoading) {

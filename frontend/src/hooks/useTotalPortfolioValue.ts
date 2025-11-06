@@ -32,7 +32,7 @@ export const useTotalPortfolioValue = (): UseTotalPortfolioValueReturn => {
         setIsLoading(true);
         setIsError(false);
 
-        const { stocks, mutualFunds, cryptos } = await getAllHoldings();
+        const { stocks, mutualFunds, cryptos, manuals } = await getAllHoldings();
 
         let totalValue = 0;
         let totalInvested = 0;
@@ -43,12 +43,12 @@ export const useTotalPortfolioValue = (): UseTotalPortfolioValueReturn => {
               const price = await getStockPrice(stock.symbol);
               return {
                 currentValue: stock.quantity * price.current_price,
-                invested: stock.quantity * stock.average_cost,
+                invested: stock.quantity * stock.purchasePrice,
               };
             } catch {
               return {
-                currentValue: stock.quantity * stock.average_cost,
-                invested: stock.quantity * stock.average_cost,
+                currentValue: stock.quantity * stock.purchasePrice,
+                invested: stock.quantity * stock.purchasePrice,
               };
             }
           })
@@ -57,15 +57,15 @@ export const useTotalPortfolioValue = (): UseTotalPortfolioValueReturn => {
         const mfPrices = await Promise.all(
           mutualFunds.map(async (mf) => {
             try {
-              const price = await getMutualFundPrice(mf.scheme_code);
+              const price = await getMutualFundPrice(mf.schemeCode);
               return {
                 currentValue: mf.quantity * price.nav,
-                invested: mf.quantity * mf.average_nav,
+                invested: mf.quantity * mf.purchasePrice,
               };
             } catch {
               return {
-                currentValue: mf.quantity * mf.average_nav,
-                invested: mf.quantity * mf.average_nav,
+                currentValue: mf.quantity * mf.purchasePrice,
+                invested: mf.quantity * mf.purchasePrice,
               };
             }
           })
@@ -74,21 +74,27 @@ export const useTotalPortfolioValue = (): UseTotalPortfolioValueReturn => {
         const cryptoPrices = await Promise.all(
           cryptos.map(async (crypto) => {
             try {
-              const price = await getCryptoPrice(crypto.coin_id);
+              const price = await getCryptoPrice(crypto.coinId);
               return {
                 currentValue: crypto.quantity * price.current_price,
-                invested: crypto.quantity * crypto.average_cost,
+                invested: crypto.quantity * crypto.purchasePrice,
               };
             } catch {
               return {
-                currentValue: crypto.quantity * crypto.average_cost,
-                invested: crypto.quantity * crypto.average_cost,
+                currentValue: crypto.quantity * crypto.purchasePrice,
+                invested: crypto.quantity * crypto.purchasePrice,
               };
             }
           })
         );
 
-        [...stockPrices, ...mfPrices, ...cryptoPrices].forEach((item) => {
+        // Add manual holdings (Gold, Real Estate, etc.)
+        const manualValues = (manuals || []).map((manual) => ({
+          currentValue: manual.currentValue,
+          invested: manual.investedValue,
+        }));
+
+        [...stockPrices, ...mfPrices, ...cryptoPrices, ...manualValues].forEach((item) => {
           totalValue += item.currentValue;
           totalInvested += item.invested;
         });

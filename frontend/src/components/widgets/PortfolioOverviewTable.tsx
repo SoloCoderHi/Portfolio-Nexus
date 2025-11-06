@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { usePortfolioHoldings } from "../../hooks/usePortfolioHoldings";
-import { SparklineChart } from "../shared/SparklineChart";
+import { useState, useEffect, useMemo } from "react";
+import { getAllHoldings } from "../../api/portfolioService";
 
 type FilterTab = "All" | "Gainers" | "Losers";
 
@@ -8,34 +7,127 @@ type PortfolioOverviewTableProps = {
   className?: string;
 };
 
+type AssetRow = {
+  assetName: string;
+  assetType: string;
+  investedValue: number;
+  currentValue: number;
+  gainLoss: number;
+  gainLossPercent: number;
+  allocation: number;
+};
+
 export const PortfolioOverviewTable = ({
   className = "",
 }: PortfolioOverviewTableProps) => {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("All");
-  const { holdings, isLoading, isError } = usePortfolioHoldings();
+  const [assetRows, setAssetRows] = useState<AssetRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  // Filter holdings based on active tab
-  const filteredHoldings = holdings.filter((holding) => {
-    if (activeFilter === "Gainers") return holding.gainLossPercent > 0;
-    if (activeFilter === "Losers") return holding.gainLossPercent < 0;
-    return true;
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setIsError(false);
+        
+        const { stocks, mutualFunds, cryptos, manuals } = await getAllHoldings();
+        const rows: AssetRow[] = [];
+        let totalPortfolioValue = 0;
 
-  // Generate mock sparkline data for each holding
-  const generateSparklineData = (basePrice: number, change: number) => {
-    const days = 7;
-    const data = [];
-    for (let i = 0; i < days; i++) {
-      const variance = Math.random() * 0.03 - 0.015; // ±1.5% variance
-      const price = basePrice * (1 + (change / 100) * (i / days) + variance);
-      data.push({ v: price });
-    }
-    return data;
-  };
+        // Calculate stocks
+        stocks.forEach(stock => {
+          const invested = stock.quantity * stock.purchasePrice;
+          const current = stock.quantity * stock.purchasePrice * 1.05; // Mock 5% gain
+          totalPortfolioValue += current;
+          rows.push({
+            assetName: stock.symbol,
+            assetType: "Stocks",
+            investedValue: invested,
+            currentValue: current,
+            gainLoss: current - invested,
+            gainLossPercent: ((current - invested) / invested) * 100,
+            allocation: 0, // Will calculate after
+          });
+        });
+
+        // Calculate crypto
+        cryptos.forEach(crypto => {
+          const invested = crypto.quantity * crypto.purchasePrice;
+          const current = crypto.quantity * crypto.purchasePrice * 1.10; // Mock 10% gain
+          totalPortfolioValue += current;
+          rows.push({
+            assetName: crypto.symbol,
+            assetType: "Crypto",
+            investedValue: invested,
+            currentValue: current,
+            gainLoss: current - invested,
+            gainLossPercent: ((current - invested) / invested) * 100,
+            allocation: 0,
+          });
+        });
+
+        // Calculate mutual funds
+        mutualFunds.forEach(mf => {
+          const invested = mf.quantity * mf.purchasePrice;
+          const current = mf.quantity * mf.purchasePrice * 1.03; // Mock 3% gain
+          totalPortfolioValue += current;
+          rows.push({
+            assetName: `Scheme ${mf.schemeCode}`,
+            assetType: "Mutual Funds",
+            investedValue: invested,
+            currentValue: current,
+            gainLoss: current - invested,
+            gainLossPercent: ((current - invested) / invested) * 100,
+            allocation: 0,
+          });
+        });
+
+        // Calculate manual holdings
+        if (manuals) {
+          manuals.forEach(manual => {
+            totalPortfolioValue += manual.currentValue;
+            rows.push({
+              assetName: manual.assetName,
+              assetType: manual.assetType,
+              investedValue: manual.investedValue,
+              currentValue: manual.currentValue,
+              gainLoss: manual.currentValue - manual.investedValue,
+              gainLossPercent: ((manual.currentValue - manual.investedValue) / manual.investedValue) * 100,
+              allocation: 0,
+            });
+          });
+        }
+
+        // Calculate allocation percentages
+        rows.forEach(row => {
+          row.allocation = (row.currentValue / totalPortfolioValue) * 100;
+        });
+
+        setAssetRows(rows);
+      } catch (error) {
+        console.error("Error fetching portfolio overview:", error);
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Filter assets based on active tab
+  const filteredAssets = useMemo(() => {
+    return assetRows.filter((asset) => {
+      if (activeFilter === "Gainers") return asset.gainLossPercent > 0;
+      if (activeFilter === "Losers") return asset.gainLossPercent < 0;
+      return true;
+    });
+  }, [assetRows, activeFilter]);
 
   return (
     <div
-      className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-6 ${className}`}
+      className={`rounded-2xl border border-slate-800 bg-black p-6 ${className}`}
     >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
@@ -74,12 +166,12 @@ export const PortfolioOverviewTable = ({
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-800 text-left text-sm text-slate-400">
-                <th className="pb-3 font-medium">Stock</th>
-                <th className="pb-3 font-medium">Last Price</th>
-                <th className="pb-3 font-medium">Change %</th>
-                <th className="pb-3 font-medium">Market Cap</th>
-                <th className="pb-3 font-medium">Volume</th>
-                <th className="pb-3 font-medium">Last 7 days</th>
+                <th className="pb-3 font-medium">Asset Name</th>
+                <th className="pb-3 font-medium text-right">Invested Value</th>
+                <th className="pb-3 font-medium text-right">Current Value</th>
+                <th className="pb-3 font-medium text-right">Total Gain/Loss</th>
+                <th className="pb-3 font-medium text-right">% Gain/Loss</th>
+                <th className="pb-3 font-medium text-right">% Allocation</th>
               </tr>
             </thead>
             <tbody>
@@ -88,20 +180,20 @@ export const PortfolioOverviewTable = ({
                   <td className="py-4">
                     <div className="h-4 w-24 animate-pulse rounded bg-slate-800" />
                   </td>
-                  <td className="py-4">
-                    <div className="h-4 w-16 animate-pulse rounded bg-slate-800" />
+                  <td className="py-4 text-right">
+                    <div className="ml-auto h-4 w-16 animate-pulse rounded bg-slate-800" />
                   </td>
-                  <td className="py-4">
-                    <div className="h-4 w-16 animate-pulse rounded bg-slate-800" />
+                  <td className="py-4 text-right">
+                    <div className="ml-auto h-4 w-16 animate-pulse rounded bg-slate-800" />
                   </td>
-                  <td className="py-4">
-                    <div className="h-4 w-20 animate-pulse rounded bg-slate-800" />
+                  <td className="py-4 text-right">
+                    <div className="ml-auto h-4 w-16 animate-pulse rounded bg-slate-800" />
                   </td>
-                  <td className="py-4">
-                    <div className="h-4 w-20 animate-pulse rounded bg-slate-800" />
+                  <td className="py-4 text-right">
+                    <div className="ml-auto h-4 w-12 animate-pulse rounded bg-slate-800" />
                   </td>
-                  <td className="py-4">
-                    <div className="h-8 w-24 animate-pulse rounded bg-slate-800" />
+                  <td className="py-4 text-right">
+                    <div className="ml-auto h-4 w-12 animate-pulse rounded bg-slate-800" />
                   </td>
                 </tr>
               ))}
@@ -111,76 +203,78 @@ export const PortfolioOverviewTable = ({
       )}
 
       {/* Empty State */}
-      {!isLoading && !isError && filteredHoldings.length === 0 && (
+      {!isLoading && !isError && filteredAssets.length === 0 && (
         <div className="py-12 text-center">
           <p className="text-sm text-slate-400">No holdings to display</p>
         </div>
       )}
 
       {/* Data Table */}
-      {!isLoading && !isError && filteredHoldings.length > 0 && (
+      {!isLoading && !isError && filteredAssets.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-800 text-left text-sm text-slate-400">
-                <th className="pb-3 font-medium">Stock</th>
-                <th className="pb-3 font-medium">Last Price</th>
-                <th className="pb-3 font-medium">Change %</th>
-                <th className="pb-3 font-medium">Market Cap</th>
-                <th className="pb-3 font-medium">Volume</th>
-                <th className="pb-3 font-medium">Last 7 days</th>
+                <th className="pb-3 font-medium">Asset Name</th>
+                <th className="pb-3 font-medium text-right">Invested Value</th>
+                <th className="pb-3 font-medium text-right">Current Value</th>
+                <th className="pb-3 font-medium text-right">Total Gain/Loss</th>
+                <th className="pb-3 font-medium text-right">% Gain/Loss</th>
+                <th className="pb-3 font-medium text-right">% Allocation</th>
               </tr>
             </thead>
             <tbody>
-              {filteredHoldings.map((holding) => {
-                const isPositive = holding.gainLossPercent > 0;
-                const sparklineData = generateSparklineData(
-                  holding.currentPrice,
-                  holding.gainLossPercent
-                );
-                const sparklineColor = isPositive ? "#10b981" : "#ef4444";
-
+              {filteredAssets.map((asset, index) => {
+                const isPositive = asset.gainLoss >= 0;
+                
                 return (
                   <tr
-                    key={holding.id}
+                    key={`${asset.assetType}-${asset.assetName}-${index}`}
                     className="border-b border-slate-800/50 transition-colors hover:bg-slate-800/30"
                   >
                     <td className="py-4">
                       <div>
                         <div className="font-medium text-slate-100">
-                          {holding.symbol}
+                          {asset.assetName}
                         </div>
                         <div className="text-sm text-slate-400">
-                          {holding.name}
+                          {asset.assetType}
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 text-slate-100">
-                      ${holding.currentPrice.toFixed(2)}
+                    <td className="py-4 text-right text-slate-300">
+                      ₹{asset.investedValue.toLocaleString("en-IN", {
+                        maximumFractionDigits: 0,
+                      })}
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 text-right text-slate-100">
+                      ₹{asset.currentValue.toLocaleString("en-IN", {
+                        maximumFractionDigits: 0,
+                      })}
+                    </td>
+                    <td className="py-4 text-right">
+                      <span
+                        className={`font-medium ${
+                          isPositive ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {isPositive ? "+" : ""}₹{Math.abs(asset.gainLoss).toLocaleString("en-IN", {
+                          maximumFractionDigits: 0,
+                        })}
+                      </span>
+                    </td>
+                    <td className="py-4 text-right">
                       <span
                         className={`font-medium ${
                           isPositive ? "text-green-500" : "text-red-500"
                         }`}
                       >
                         {isPositive ? "+" : ""}
-                        {holding.gainLossPercent.toFixed(2)}%
+                        {asset.gainLossPercent.toFixed(2)}%
                       </span>
                     </td>
-                    <td className="py-4 text-slate-300">
-                      ${(holding.currentPrice * holding.quantity * 1000).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </td>
-                    <td className="py-4 text-slate-300">
-                      {(holding.quantity * 1000).toLocaleString()}
-                    </td>
-                    <td className="py-4">
-                      <div className="w-24">
-                        <SparklineChart
-                          data={sparklineData}
-                          color={sparklineColor}
-                        />
-                      </div>
+                    <td className="py-4 text-right text-slate-300">
+                      {asset.allocation.toFixed(2)}%
                     </td>
                   </tr>
                 );

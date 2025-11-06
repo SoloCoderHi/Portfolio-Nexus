@@ -10,7 +10,7 @@ export const AssetCard = ({ holding }: AssetCardProps) => {
   const gainLossPrefix = isPositive ? "+" : "";
 
   return (
-    <div className="flex min-w-60 flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition hover:border-slate-700">
+    <div className="flex min-w-60 flex-col gap-3 rounded-xl border border-slate-800 bg-black p-4 transition hover:border-slate-700">
       {/* Header: Logo + Symbol */}
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-bold text-indigo-300">
@@ -29,7 +29,7 @@ export const AssetCard = ({ holding }: AssetCardProps) => {
         <p className="text-xs text-slate-400">Current Price</p>
         <p className="text-xl font-bold text-slate-50">
           $
-          {holding.currentPrice.toLocaleString("en-US", {
+          {(holding.currentPrice ?? 0).toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}
@@ -42,13 +42,13 @@ export const AssetCard = ({ holding }: AssetCardProps) => {
           <p className="text-xs text-slate-400">Gain/Loss</p>
           <p className={`text-sm font-semibold ${gainLossColorClass}`}>
             {gainLossPrefix}
-            {holding.gainLossPercent.toFixed(1)}%
+            {(holding.gainLossPercent ?? 0).toFixed(1)}%
           </p>
         </div>
         <div className="text-right">
           <p className="text-xs text-slate-400">Units</p>
           <p className="text-sm font-medium text-slate-200">
-            {holding.quantity}
+            {holding.quantity ?? 0}
           </p>
         </div>
       </div>
