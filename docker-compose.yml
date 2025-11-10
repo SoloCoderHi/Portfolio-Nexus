@@ -97,7 +97,25 @@ services:
       KAFKA_HOST: kafka
       KAFKA_PORT: 9092
 
-
+  expenseservice:
+    build: ./expenseService
+    container_name: expenseservice
+    restart: on-failure
+    ports:
+      - "9812:9812"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: expenseservice
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
 
   marketdataservice: # <- THIS MUST BE PRESENT!
     build: ./marketDataService

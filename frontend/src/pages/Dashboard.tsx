@@ -2,7 +2,7 @@ import { AssetTypeSummaryCards } from "../components/widgets/AssetTypeSummaryCar
 import { PortfolioPerformanceChart } from "../components/widgets/PortfolioPerformanceChart";
 import { TotalHoldingCard } from "../components/widgets/TotalHoldingCard";
 import { PortfolioOverviewTable } from "../components/widgets/PortfolioOverviewTable";
-import { WatchlistTable } from "../components/widgets/WatchlistTable";
+import { RecentTransactions } from "../components/widgets/RecentTransactions";
 
 const Dashboard = () => {
   return (
@@ -40,8 +40,8 @@ const Dashboard = () => {
         {/* Portfolio Overview Table - Spans 2 columns */}
         <PortfolioOverviewTable className="lg:col-span-2" />
 
-        {/* Watchlist Table - Spans 1 column */}
-        <WatchlistTable className="lg:col-span-1" />
+        {/* Recent Transactions - Spans 1 column */}
+        <RecentTransactions className="lg:col-span-1" />
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ executing==2.0.1
 fastjsonschema==2.19.1
 filelock==3.13.4
 Flask==3.0.3
+Flask-CORS
 frozenlist==1.4.1
 fsspec==2024.3.1
 h11==0.14.0
@@ -103,4 +104,3 @@ yarl==1.9.4
 requests==2.31.0
 yfinance
 lxml
-

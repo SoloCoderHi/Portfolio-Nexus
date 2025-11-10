@@ -2,9 +2,12 @@ import { useCallback, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { SideNav } from "./components/layout/SideNav";
 import { HeaderBar } from "./components/layout/HeaderBar";
+import { FloatingActionButton } from "./components/shared/FloatingActionButton";
+import { AddTransactionModal } from "./components/modals/AddTransactionModal";
 
 export const App = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleToggleNav = useCallback(() => {
     setIsMobileNavOpen((prev) => !prev);
@@ -23,6 +26,11 @@ export const App = () => {
           <Outlet />
         </main>
       </div>
+      <FloatingActionButton onClick={() => setIsModalOpen(true)} />
+      <AddTransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

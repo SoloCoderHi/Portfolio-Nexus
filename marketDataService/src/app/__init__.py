@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from .clients.stock_client import search_stocks, get_stock_price
 from .clients.mf_client import search_mutual_funds, get_mutual_fund_nav
 from .clients.crypto_client import search_crypto, get_crypto_price
@@ -6,6 +7,8 @@ from .clients.nps_client import search_nps, get_nps_nav
 from .clients.metals_client import get_gold_price, get_silver_price
 
 app = Flask(__name__)
+# Allow requests from our frontend
+CORS(app, origins="http://localhost:5173")
 
 @app.route('/', methods=['GET'])
 def handle_get():
